@@ -31,6 +31,7 @@
 SUSCAN_PLUGIN("AntSDRPlugin", "AntSDR plugin for coherent RX");
 SUSCAN_PLUGIN_VERSION(0, 1, 0);
 SUSCAN_PLUGIN_API_VERSION(0, 3, 0);
+SUSCAN_PLUGIN_DEPENDS("ad9361");
 
 void
 plugin_delayed_load(Suscan::Plugin *)
@@ -39,10 +40,10 @@ plugin_delayed_load(Suscan::Plugin *)
 }
 
 bool
-plugin_load(Suscan::Plugin *plugin)
+plugin_entry_sigdigger(Suscan::Plugin *plugin)
 {
   Suscan::Singleton *sus = Suscan::Singleton::get_instance();
-  
+
   if (!sus->registerSourceConfigWidgetFactory(
         new AD9361SourcePageFactory(plugin)))
     return false;
@@ -66,4 +67,15 @@ plugin_load(Suscan::Plugin *plugin)
   sus->registerDelayedCallback(plugin_delayed_load, plugin);
 
   return true;
+}
+
+SUSCAN_PLUGIN_ENTRY(suscanPlugin)
+{
+  auto plugin = reinterpret_cast<Suscan::Plugin *>(
+    suscan_plugin_get_service(suscanPlugin, "SigDigger"));
+
+  if (plugin != nullptr)
+    return plugin_entry_sigdigger(plugin);
+  else
+    return suscan_source_register_ad9361();
 }
