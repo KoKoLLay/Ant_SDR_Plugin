@@ -12,9 +12,10 @@ pkg_check_modules(SIGUTILS  REQUIRED sigutils>=0.3)
 pkg_check_modules(SUSCAN    REQUIRED suscan>=0.3)
 pkg_check_modules(SNDFILE   REQUIRED sndfile>=1.0.2)
 pkg_check_modules(FFTW3     REQUIRED fftw3f>=3.0)
-pkg_check_modules(LIBIIO    REQUIRED libiio>=0.25)
+pkg_check_modules(LIBIIO    REQUIRED libiio>=0.24)
 pkg_check_modules(LIBAD9361 REQUIRED libad9361>=0.2)
-file(REAL_PATH "~/.suscan/plugins" SUSCAN_PLUGIN_PATH EXPAND_TILDE)
+file(REAL_PATH "~/.suscan/plugins" SUSCAN_DEFAULT_PLUGIN_PATH EXPAND_TILDE)
+set(PLUGIN_DIRECTORY "${SUSCAN_DEFAULT_PLUGIN_PATH}" CACHE STRING "Suscan plugin installation directory")
 
 # AD9361 plugin
 set(AD9361_SOURCES 2rx_ad9361.c Registration_ad9361.c)
@@ -131,5 +132,5 @@ target_include_directories(AntSDRPlugin INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 ############################# Plugin install ###################################
-install(TARGETS AntSDRPlugin 2rx_ad9361 DESTINATION ${SUSCAN_PLUGIN_PATH})
+install(TARGETS AntSDRPlugin 2rx_ad9361 DESTINATION ${PLUGIN_DIRECTORY})
 
